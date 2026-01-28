@@ -1,59 +1,46 @@
-/*
- * This template file
- */
-
 #include <ti/devices/msp/msp.h>
 #include "delay.h"
 #include "initialize_leds.h"
-#include "state_machine_logic.h"
 
-/* This results in approximately 0.5s of delay assuming 32 MHz CPU_CLK */
-#define DELAY (16000000)
+/* same masks as in initialize_leds.c (repeat here to avoid extra files) */
+#define LED12A (1u << 0)
+#define LED11A (1u << 28)  // may not work if PA28 isn't GPIOA channel
+#define LED10A (1u << 6)
+#define LED9A  (1u << 8)
+#define LED8A  (1u << 10)
+#define LED7A  (1u << 12)
+#define LED6A  (1u << 14)
+#define LED5A  (1u << 16)
+#define LED4A  (1u << 18)
+#define LED3A  (1u << 22)
+#define LED2A  (1u << 24)
+#define LED1A  (1u << 26)
+
+#define LED12B (1u << 27)
+#define LED11B (1u << 1)
+#define LED10B (1u << 5)
+#define LED9B  (1u << 7)
+#define LED8B  (1u << 9)
+#define LED7B  (1u << 11)
+#define LED6B  (1u << 13)
+#define LED5B  (1u << 15)
+#define LED4B  (1u << 17)
+#define LED3B  (1u << 21)
+#define LED2B  (1u << 23)
+#define LED1B  (1u << 25)
+
+#define ALL_LEDS_GPIOA ( \
+    LED12A|LED11A|LED10A|LED9A|LED8A|LED7A|LED6A|LED5A|LED4A|LED3A|LED2A|LED1A| \
+    LED12B|LED11B|LED10B|LED9B|LED8B|LED7B|LED6B|LED5B|LED4B|LED3B|LED2B|LED1B )
 
 int main(void)
 {
     InitializeGPIO();
-    
-    int state = OFF; // initialize state machine
 
-    // Functional
+    /* Turn ON all LEDs (active-low => drive LOW) */
+    GPIOA->DOUTCLR31_0 = ALL_LEDS_GPIOA;
+
     while (1) {
-        int output = GetStateOutputGPIOA(state);
-        GPIOA->DOUT31_0 = output;
-
-        state = GetNextState(state);
-        delay_cycles(DELAY);
+        // stay on forever for inspection
     }
 }
-
-/*
- * Copyright (c) 2023, Texas Instruments Incorporated
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * *  Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- * *  Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * *  Neither the name of Texas Instruments Incorporated nor the names of
- *    its contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
